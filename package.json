@@ -1,5 +1,5 @@
 {
-  "name": "typeorm-cursor-pagination",
+  "name": "@lastlight/typeorm-cursor-pagination",
   "version": "0.10.1",
   "description": "[FORK] Cursor-based pagination works with TypeORM.",
   "main": "lib/index.js",
