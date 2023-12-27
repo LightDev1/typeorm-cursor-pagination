@@ -1,6 +1,6 @@
 {
   "name": "@lastlight/typeorm-cursor-pagination",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "[FORK] Cursor-based pagination works with TypeORM.",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,9 @@
     "coverage": "codecov",
     "test:docker": "docker-compose up -d && npm run test && docker-compose down",
     "build": "rimraf lib && tsc -p tsconfig.build.json",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "release": "standard-version",
+    "publish-lib": "npm run release && npm run build && npm publish"
   },
   "author": "Salavat Nabiullin <karumasanmy@gmail.com>",
   "repository": {
@@ -45,5 +47,7 @@
   "peerDependencies": {
     "typeorm": "^0.3.6"
   },
-  "dependencies": {}
+  "dependencies": {
+    "standard-version": "^9.5.0"
+  }
 }
