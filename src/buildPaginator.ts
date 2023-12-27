@@ -1,4 +1,4 @@
-import { ObjectLiteral, ObjectType } from 'typeorm';
+import { FindManyOptions, ObjectLiteral, ObjectType } from 'typeorm';
 
 import Paginator, { Order } from './Paginator';
 
@@ -14,6 +14,7 @@ export interface PaginationOptions<Entity> {
   alias?: string;
   query?: PagingQuery;
   paginationKeys?: Extract<keyof Entity, string>[];
+  findOptions?: FindManyOptions<Entity>;
 }
 
 export function buildPaginator<Entity extends ObjectLiteral>(
@@ -24,6 +25,7 @@ export function buildPaginator<Entity extends ObjectLiteral>(
     query = {},
     alias = entity.name.toLowerCase(),
     paginationKeys = ['id' as any],
+    findOptions,
   } = options;
 
   const paginator = new Paginator(entity, paginationKeys);
@@ -44,6 +46,10 @@ export function buildPaginator<Entity extends ObjectLiteral>(
 
   if (query.order) {
     paginator.setOrder(query.order as Order);
+  }
+
+  if (findOptions) {
+    paginator.setFindOptions(findOptions);
   }
 
   return paginator;
