@@ -161,8 +161,8 @@ export default class CursorPaginator<Entity extends ObjectLiteral> {
       params[key] = cursors[key];
 
       if (params[key]) {
-        where.andWhere(`(${query}${this.alias}.${key} ${operator} :${key})`, params);
-        query = `${query}${this.alias}.${key} = :${key} OR `;
+        where.orWhere(`${query}${this.alias}.${key} ${operator} :${key}`, params);
+        query = `${query}${this.alias}.${key} = :${key} AND `;
       }
     });
   }
