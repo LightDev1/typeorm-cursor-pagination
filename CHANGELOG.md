@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.10.3](https://github.com/LightDev1/typeorm-cursor-pagination/compare/v0.10.2...v0.10.3) (2023-12-28)
+
+
+### Bug Fixes
+
+* returned original pagination where logic ([f719e40](https://github.com/LightDev1/typeorm-cursor-pagination/commit/f719e4093c05a0e8927340c74ba7f9c93d271236))
+
 ### 0.10.2 (2023-12-27)
 
 
