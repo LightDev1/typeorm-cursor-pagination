@@ -38,6 +38,10 @@ export interface Paginated<Entity> {
   afterCursor: string | null;
 }
 
+export type PaginationKey<Entity> = Extract<keyof Entity, string>
+
+export type PaginationOrder = {[key: string]: Order}
+
 export default class CursorPaginator<Entity extends ObjectLiteral> {
   private afterCursor: string | null = null;
 
@@ -55,9 +59,11 @@ export default class CursorPaginator<Entity extends ObjectLiteral> {
 
   private findOptions: FindManyOptions<Entity> | undefined;
 
+  private paginationOrderForKeys: PaginationOrder | null = null;
+
   public constructor(
     private entity: ObjectType<Entity>,
-    private paginationKeys: Extract<keyof Entity, string>[],
+    private paginationKeys: PaginationKey<Entity>[],
   ) {}
 
   public setAlias(alias: string): void {
@@ -84,8 +90,12 @@ export default class CursorPaginator<Entity extends ObjectLiteral> {
     this.findOptions = options;
   }
 
-  public setPaginationKeys(keys: Extract<keyof Entity, string>[]): void {
+  public setPaginationKeys(keys: PaginationKey<Entity>[]): void {
     this.paginationKeys = keys;
+  }
+
+  public setPaginationOrderByKeys(paginationOrder: PaginationOrder): void {
+    this.paginationOrderForKeys = paginationOrder
   }
 
   public async paginate(builder: SelectQueryBuilder<Entity>): Promise<Paginated<Entity>> {
@@ -154,11 +164,15 @@ export default class CursorPaginator<Entity extends ObjectLiteral> {
   }
 
   private buildCursorQuery(where: WhereExpressionBuilder, cursors: CursorParam): void {
-    const operator = this.getOperator();
+    let operator = this.getOperator();
     const params: CursorParam = {};
     let query = '';
     this.paginationKeys.forEach((key) => {
       params[key] = cursors[key];
+      
+      if (this.paginationOrderForKeys) {
+        operator = this.paginationOrderForKeys[key] === 'ASC' ? '>' : '<'
+      }
 
       if (params[key]) {
         where.orWhere(`${query}${this.alias}.${key} ${operator} :${key}`, params);
@@ -188,6 +202,10 @@ export default class CursorPaginator<Entity extends ObjectLiteral> {
 
     const orderByCondition: OrderByCondition = {};
     this.paginationKeys.forEach((key) => {
+      if (this.paginationOrderForKeys) {
+        order = this.paginationOrderForKeys[key];
+      }
+
       orderByCondition[`${this.alias}.${key}`] = order;
     });
 
